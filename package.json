@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "pm2 start ./bin/www -i max",
+    "stop": "pm2 stop all"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -13,6 +14,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.8.1",
     "serve-favicon": "~2.4.2",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "pm2": "^2.4.2"
   }
 }
