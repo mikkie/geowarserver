@@ -6,21 +6,28 @@
 
 var app = require('../app');
 var debug = require('debug')('geowarserver:server');
-var http = require('http');
+var https = require('https');
 var socketHandler = require('../routes/socketHandler');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8443');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
-
-var server = http.createServer(app);
+var key = fs.readFileSync(path.join(__dirname,'..','..','cert','geowar.key'));
+var cert = fs.readFileSync(path.join(__dirname,'..','..','cert','geowar.crt'));
+var https_options = {
+    key: key,
+    cert: cert,
+    secureProtocol: 'SSLv23_method',
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_TLSv1
+};
+var server = https.createServer(https_options,app);
 
 /**
  * Listen on provided port, on all network interfaces.
