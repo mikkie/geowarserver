@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('geowarserver:server');
 var https = require('https');
+var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var constants = require('constants');
@@ -16,7 +17,7 @@ var socketHandler = require('../routes/socketHandler');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '8443');
+var port = normalizePort(process.env.PORT || '8081');
 app.set('port', port);
 
 /**
@@ -30,7 +31,8 @@ var https_options = {
     secureProtocol: 'SSLv23_method',
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_TLSv1
 };
-var server = https.createServer(https_options,app);
+// var server = https.createServer(https_options,app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -41,7 +43,11 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 
-var io = require('socket.io')(server);
+var io = require('socket.io')(server,{
+   serveClient : false
+});
+//name space
+io = io.of('/nodejs');
 socketHandler.handle(io);
 /**
  * Normalize a port into a number, string, or false.
